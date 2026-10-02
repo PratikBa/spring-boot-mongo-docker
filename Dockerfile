@@ -1,8 +1,7 @@
-FROM openjdk:8-alpine
+# 1. Updated from Java 8 to Java 21 (using eclipse-temurin for a slim alpine base)
+FROM eclipse-temurin:21-jre-alpine
 
-# Required for starting application up.
-RUN apk update && apk add /bin/sh
-
+# 2. Alpine comes with /bin/sh by default, so we removed the redundant apk add step
 RUN mkdir -p /opt/app
 ENV PROJECT_HOME /opt/app
 
@@ -10,4 +9,6 @@ COPY target/spring-boot-mongo-1.0.jar $PROJECT_HOME/spring-boot-mongo.jar
 
 WORKDIR $PROJECT_HOME
 EXPOSE 8080
-CMD ["java" ,"-jar","./spring-boot-mongo.jar"]
+
+# 3. Cleaned up the execution command array
+CMD ["java", "-jar", "spring-boot-mongo.jar"]

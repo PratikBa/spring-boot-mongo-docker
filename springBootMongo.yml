@@ -14,33 +14,6 @@ metadata:
 type: Opaque
 stringData:   # We can define multiple key value pairs.
   password: devdb@123
-
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-hostpath
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 1Gi
-  accessModes:
-  - ReadWriteOnce
-  hostPath:
-    path: "/tmp/mongodata"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-hostpath
-spec:
-  storageClassName: manual
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
-
 ---
 ## Spring Boot App
 apiVersion: apps/v1
@@ -104,10 +77,6 @@ spec:
        labels:
          app: mongodb
      spec:
-       volumes:
-       - name: mongodb-pvc
-         persistentVolumeClaim:
-           claimName: pvc-hostpath
        containers:
        - name: mongodbcontainer
          image: mongo
@@ -124,9 +93,15 @@ spec:
              secretKeyRef:
                name: springappsecrets
                key: password
-         volumeMounts:
-         - name: mongodb-pvc
-           mountPath: /data/db
+       VolumeMounts:
+       - name: mongovol
+         mountPath: /data/db
+       Volumes:
+       - name: mongovol
+         hostPath:
+           path: /mongodata
+  
+
 ---
 apiVersion: v1
 kind: Service

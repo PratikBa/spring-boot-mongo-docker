@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: springappcontainer
-          image: pratikbansode23/springbootmongoproject
+          image: pratikbansode23/springboot-mongo
           ports:
             - containerPort: 8080
           env:
